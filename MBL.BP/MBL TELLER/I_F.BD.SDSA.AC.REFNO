@@ -1,0 +1,8 @@
+* I_F.BD.SDSA.AC.REFNO Created 19 NOV 19 at 02:46PM by MORTOZA/MORTOZA01
+*      PREFIX[BD.SDSA.AC]
+                  EQU BD.SDSA.AC.SDSA.REF.NO TO 1,   BdSdsaAcRefno_SdsaRefNo TO 1,
+                      BD.SDSA.AC.RESERVED.05 TO 2,   BdSdsaAcRefno_Reserved05 TO 2,
+                      BD.SDSA.AC.RESERVED.04 TO 3,   BdSdsaAcRefno_Reserved04 TO 3,
+                      BD.SDSA.AC.RESERVED.03 TO 4,   BdSdsaAcRefno_Reserved03 TO 4,
+                      BD.SDSA.AC.RESERVED.02 TO 5,   BdSdsaAcRefno_Reserved02 TO 5,
+                      BD.SDSA.AC.RESERVED.01 TO 6,   BdSdsaAcRefno_Reserved01 TO 6

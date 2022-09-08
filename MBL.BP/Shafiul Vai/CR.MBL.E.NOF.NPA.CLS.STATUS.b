@@ -1,0 +1,434 @@
+* @ValidationCode : MjozMzgwMzA5NDY6Q3AxMjUyOjE2MzI4NDI1MjU3NTg6dXNlcjotMTotMTowOjA6ZmFsc2U6Ti9BOkRFVl8yMDE3MTAuMDotMTotMQ==
+* @ValidationInfo : Timestamp         : 28 Sep 2021 21:22:05
+* @ValidationInfo : Encoding          : Cp1252
+* @ValidationInfo : User Name         : user
+* @ValidationInfo : Nb tests success  : N/A
+* @ValidationInfo : Nb tests failure  : N/A
+* @ValidationInfo : Rating            : N/A
+* @ValidationInfo : Coverage          : N/A
+* @ValidationInfo : Strict flag       : N/A
+* @ValidationInfo : Bypass GateKeeper : false
+* @ValidationInfo : Compiler Version  : DEV_201710.0
+
+* @AUTHOR         : MD SHIBLI MOLLAH
+
+* Modification History :
+*-----------------------------------------------------------------------------
+* Modified by MD SHIBLI MOLLAH FDS -- on 05TH MAY 2021
+*---------------------------------------------------
+* Modification History :2  UPDATE LIMIT IF NULL
+*-----------------------------------------------------------------------------
+*-----------------------------------------------------------------------------
+* Modified by MD SHIBLI MOLLAH FDS -- on 29TH AUG 2021
+*----------------MINIMIZED SELECTION -AA.ARR.ACCOUNT------------------------------------------------------------
+
+SUBROUTINE CR.MBL.E.NOF.NPA.CLS.STATUS(Y.DATA)
+*-----------------------------------------------------------------------------
+*
+    $INSERT  I_COMMON
+    $INSERT  I_EQUATE
+    $INSERT I_F.BD.NPA.LN.TYPE
+    $INSERT I_F.BD.NPA.PARAM
+    $INSERT I_F.BD.NPA.PARAM.GROUP
+    $INSERT I_F.BD.NPA.STATUS.DETAILS
+
+    $USING EB.Reports
+    $USING EB.SystemTables
+    $USING AC.AccountOpening
+    $USING EB.DataAccess
+    $USING AA.Framework
+    $USING RE.ConBalanceUpdates
+    $USING AA.Account
+    $USING AA.Limit
+    $USING ST.Customer
+    $USING LI.Config
+    $USING AA.Interest
+    $USING ST.CompanyCreation
+    $USING AA.PaymentSchedule
+    $USING AA.ProductManagement
+    $USING ST.Config
+    $USING AA.TermAmount
+    $USING EB.LocalReferences
+    $USING ST.AssetProcessing
+    $USING EB.Updates
+    $USING EB.API
+    
+    GOSUB INTT
+    GOSUB OPNFILE
+    GOSUB PROCESS
+RETURN
+
+*============*
+INTT:
+*============*
+
+    Y.COMPANY = EB.SystemTables.getIdCompany()
+    
+    FN.CUS="F.CUSTOMER"
+    F.CUS=""
+    
+    FN.BILL.DETAILS= "F.AA.BILL.DETAILS"
+    F.BILL.DETAILS = ""
+    
+    FN.CUSTOMER.ACCOUNT = "F.CUSTOMER.ACCOUNT"
+    F.CUSTOMER.ACCOUNT = ""
+    
+    FN.AA.ARRANGEMENT ="F.AA.ARRANGEMENT"
+    F.AA.ARRANGEMENT= ""
+    FN.AA.PRODUCT="F.AA.PRODUCT"
+    F.AA.PRODUCT=""
+    
+    FN.ACCT.DETAILS = "F.AA.ACCOUNT.DETAILS"
+    F.ACCT.DETAILS = ""
+    
+    FN.ACC = 'F.ACCOUNT'
+    F.ACC = ''
+    
+    FN.AA.ARR.ACCT = "F.AA.ARR.ACCOUNT"
+    F.AA.ARR.ACCT =""
+    
+    FN.AA.INT.ACCR = "F.AA.INTEREST.ACCRUALS"
+    F.AA.INT.ACCR = ""
+    
+    FN.AA.ARR.PAY.SCH = "F.AA.ARR.PAYMENT.SCHEDULE"
+    F.AA.ARR.PAY.SCH = ""
+    
+    FN.LIMIT = "F.AA.ARR.LIMIT"
+    F.LIMIT = ""
+    
+    FN.LIM = "F.LIMIT"
+    F.LIM = ""
+    
+    FN.LIMIT.REFERENCE = "F.LIMIT.REFERENCE"
+    F.LIMIT.REFERENCE = ""
+    
+    FN.BD.NPA.LN.TYPE = "F.BD.NPA.LN.TYPE"
+    F.BD.NPA.LN.TYPE = ""
+    
+    FN.BD.NPA.STATUS.DETAILS = "F.BD.NPA.STATUS.DETAILS"
+    F.BD.NPA.STATUS.DETAILS = ""
+    
+    FN.BD.NPA.PARAM = "F.BD.NPA.PARAM"
+    F.BD.NPA.PARAM = ""
+   
+    FN.LN.ASSET.CLASS = "F.LN.ASSET.CLASS"
+    F.LN.ASSET.CLASS = ""
+    
+    FN.COM="F.COMPANY"
+    F.COM=""
+    
+    FN.CAT = 'F.CATEGORY'
+    F.CAT = ''
+    
+    Y.TODAY = EB.SystemTables.getToday()
+    
+    Y.MNEMONIC = ''
+    FLD.POS = ''
+    Y.ARR.ID = ''
+    Y.ARR.COM.CODE = ''
+    Y.CUS.ID = ''
+    Y.PRD.DES = ''
+    Y.LIMIT.REF = ''
+    Y.LT.AC.BD.LMTPRD = ''
+    CURR.CL = ''
+    PROBABLE.CL = ''
+    MANUAL.CL = ''
+    PD.STATUS = ''
+    LOAN.NATURE = ''
+    OVERDUE.FROM = ''
+    Y.LN.LC.NUM = ''
+    OVERDUE.DAYS = ''
+    Y.EXPIRY.DATE = ''
+    Y.EXP.DATE = ''
+    Y.LT.LN.TP = ''
+    Y.LN.TYP = ''
+    Y.LN.ACC = ''
+    Y.BD.NPA.GROUP = ''
+    Y.TOTAL.SLAB = ''
+    Y.OVERDUE.INSTL.TO = ''
+    Y.OVERDUE.INSTL.FR = ''
+    
+    APPLICATION.NAMES = 'AA.ARR.ACCOUNT':@FM:'LIMIT.REFERENCE'
+    LOCAL.FIELDS = 'LT.MAIN.MANUAL':@VM:'LT.AC.BD.LNMADT':@VM:'LT.ASSET.CLASS':@VM:'LT.AC.BD.LMTPRD':@FM:'LT.LN.TYPE'
+    EB.Updates.MultiGetLocRef(APPLICATION.NAMES, LOCAL.FIELDS, FLD.POS)
+    Y.LT.MAIN.MANUAL.POS = FLD.POS<1,1>
+    Y.LT.LN.TYPE.POS = FLD.POS<2,1>
+    Y.AC.BD.LNMADT.POS = FLD.POS<1,2>
+    Y.LT.ASSET.CLASS.POS = FLD.POS<1,3>
+    Y.LT.AC.BD.LMTPRD.POS = FLD.POS<1,4>
+    
+    
+     
+RETURN
+*============*
+OPNFILE:
+*============*
+    EB.DataAccess.Opf(FN.CUSTOMER.ACCOUNT, F.CUSTOMER.ACCOUNT)
+    EB.DataAccess.Opf(FN.BILL.DETAILS, F.BILL.DETAILS)
+    EB.DataAccess.Opf(FN.AA.ARRANGEMENT, F.AA.ARRANGEMENT)
+    EB.DataAccess.Opf(FN.ACCT.DETAILS, F.ACCT.DETAILS)
+    EB.DataAccess.Opf(FN.AA.ARR.ACCT, F.AA.ARR.ACCT)
+    EB.DataAccess.Opf(FN.LIMIT,F.LIMIT)
+    EB.DataAccess.Opf(FN.CUS,F.CUS)
+    EB.DataAccess.Opf(FN.LIM,F.LIM)
+    EB.DataAccess.Opf(FN.LIMIT.REFERENCE,F.LIMIT.REFERENCE)
+    EB.DataAccess.Opf(FN.COM,F.COM)
+    EB.DataAccess.Opf(FN.AA.PRODUCT,F.AA.PRODUCT)
+    EB.DataAccess.Opf(FN.CAT,F.CAT)
+    EB.DataAccess.Opf(FN.ACC, F.ACC)
+    EB.DataAccess.Opf(FN.AA.INT.ACCR, F.AA.INT.ACCR)
+    EB.DataAccess.Opf(FN.AA.ARR.PAY.SCH, F.AA.ARR.PAY.SCH)
+    EB.DataAccess.Opf(FN.LN.ASSET.CLASS,F.LN.ASSET.CLASS)
+    EB.DataAccess.Opf(FN.BD.NPA.LN.TYPE,F.BD.NPA.LN.TYPE)
+    EB.DataAccess.Opf(FN.BD.NPA.PARAM,F.BD.NPA.PARAM)
+    EB.DataAccess.Opf(FN.BD.NPA.STATUS.DETAILS,F.BD.NPA.STATUS.DETAILS)
+    
+RETURN
+
+PROCESS:
+*
+*---------------------------------------------------------------------
+    Y.MNEMONIC = FN.ACCT.DETAILS[2,3]
+    
+    IF Y.MNEMONIC EQ 'BNK' THEN
+        Y.OD.PROPER = "INTONOD"
+        Y.INT.PROPER = "PRINCIPALINT"
+        Y.CR.ACC = 'CURACCOUNT'
+        Y.PR.INT = 'ACCPRINCIPALINT'
+        Y.DUE.PR.INT = 'DUEPRINCIPALINT'
+        Y.DUE.ACC = "DUEACCOUNT"
+*MUST INCLUDE IN PRINCIPAL AMT--- DUEACCOUNT****
+        Y.PD.BAL.TYPE.ALL = 'DELACCOUNT':@VM:'DOFACCOUNT':@VM:'GRCACCOUNT':@VM:'NABACCOUNT':@VM:'SMAACCOUNT':@VM:'STDACCOUNT':@VM:'SUBACCOUNT'
+        Y.PD.PFT.ALL = 'ACCINTONOD':@VM:'DELPRINCIPALINT':@VM:'DOFPRINCIPALINT':@VM:'GRCPRINCIPALINT':@VM:'NABPRINCIPALINT':@VM:'SMAPRINCIPALINT':@VM:'STDPRINCIPALINT':@VM:'SUBPRINCIPALINT'
+    
+*----------------------------Main Process--------------------------------------------------
+* SEL.CMD.ARR = "SELECT ":FN.AA.ARRANGEMENT:" WITH PRODUCT.LINE EQ 'LENDING' OR PRODUCT.LINE EQ 'ACCOUNTS' AND PRODUCT.GROUP NE 'MBL.CD.GRP.AC' AND PRODUCT.GROUP NE 'MBL.FCAC.GRP.AC' AND PRODUCT.GROUP NE 'MBL.FCACTAKA.GRP.AC' AND PRODUCT.GROUP NE 'MBL.SD.GRP.AC' AND PRODUCT.GROUP NE 'MBL.SND.GRP.AC' AND PRODUCT.GROUP NE 'MBL.TFFCY.GRP.AC' AND PRODUCT.GROUP NE 'MBL.TFLCY.GRP.AC' AND CO.CODE EQ ":Y.COMPANY
+        SEL.CMD.ARR = "SELECT ":FN.AA.ARRANGEMENT:" WITH PRODUCT.LINE EQ 'LENDING' 'ACCOUNTS' AND PRODUCT.GROUP EQ 'MBL.BLOCK.INTER.LN' 'MBL.CAR.PRN.LN' 'MBL.CSHCR.AG.LN' 'MBL.CSHCR.HP.LN' 'MBL.EDF.INFIN.LN' 'MBL.EDF.LN' 'MBL.EHBL.PRN.LN' 'MBL.LIQ.AC.LN' 'MBL.PAD.BTB.LN' 'MBL.PAD.CASH.LN' 'MBL.PRV.FND.LN' 'MBL.SOD.AGR.LN' 'MBL.SOD.EMFS.LN' 'MBL.SOD.FDR.LN' 'MBL.SOD.GEN.LN' 'MBL.SOD.SCHM.LN' 'MBL.ST.PRS.P.LN' 'IS.MBL.AGR.HPSM.LN' 'IS.MBL.AGR.MUAJ.LN' 'IS.MBL.COR.ASRF.LN' 'IS.MBL.COR.HPSM.LN' 'IS.MBL.COR.MUAJ.LN' 'IS.MBL.COR.MUR.LN' 'IS.MBL.COR.MUSH.LN' 'IS.MBL.COR.QRD.LN' 'IS.MBL.COR.SALM.LN' 'IS.MBL.MIC.HPSM.LN' 'IS.MBL.MIC.MUAJ.LN' 'IS.MBL.MIC.MUR.LN' 'IS.MBL.MIC.MUSH.LN' 'IS.MBL.MIC.QRD.LN' 'IS.MBL.RET.HPSM.LN' 'IS.MBL.RET.MUAJ.LN' 'IS.MBL.RET.QRD.LN' 'IS.MBL.SME.ASRF.LN' 'IS.MBL.SME.HPSM.LN' 'IS.MBL.SME.MUAJ.LN' 'IS.MBL.SME.MUR.LN' 'IS.MBL.SME.MUSH.LN' 'IS.MBL.SME.QRD.LN' 'IS.MBL.SME.SALM.LN' 'MBL.ANY.PURP.LN' 'MBL.AUTO.RET.LN' 'MBL.BB.RF.FC.LN' 'MBL.BBREFIN.GRP.LN' 'MBL.BIL.DISC.LN' 'MBL.BILLDISC.GRP.LN' 'MBL.COTT.RET.LN' 'MBL.DOCT.RET.LN' 'MBL.EDU.RET.LN' 'MBL.FBP.LN' 'MBL.FDBP.GRP.LN' 'MBL.FDBP.LN' 'MBL.FO.LN' 'MBL.FORCE.BG.LN' 'MBL.FORCE.IMP.LN' 'MBL.GEN.CORP.LN' 'MBL.HBL.LN' 'MBL.HIRE.PUR.LN' 'MBL.HOUSE.FU.LN' 'MBL.HREPRCH.GRP.LN' 'MBL.HSBLDNG.GRP.LN' 'MBL.IBP.CLN' 'MBL.IBPCLN.GRP.LN' 'MBL.IDBP.GRP.LN' 'MBL.IDBP.LN' 'MBL.LEAS.AGR.LN' 'MBL.LEAS.FIN.LN' 'MBL.LEASEFIN.GRP.LN' 'MBL.LOANFO.GRP.LN' 'MBL.LTR.GRP.LN' 'MBL.LTR.LN' 'MBL.OTH.CONS.LN' 'MBL.OTHER.LN' 'MBL.OTHLN.GRP.LN' 'MBL.OTHRETL.GRP.LN' 'MBL.OVRS.EMP.LN' 'MBL.PACK.CR.LN' 'MBL.PC.GRP.LN' 'MBL.PER.RET.LN' 'MBL.PRANTIK.LN' 'MBL.SHRT.AGR.LN' 'MBL.SHRT.TRM.LN' 'MBL.SHRTLN.GRP.LN' 'MBL.SML.SCH.LN' 'MBL.SOD.WO.LN' 'MBL.SODWO.GRP.LN' 'MBL.TERM.AGR.LN' 'MBL.TERM.FIS.LN' 'MBL.TERM.LN' 'MBL.TIME.FIS.LN' 'MBL.TIME.FRC.LN' 'MBL.TIME.LN' 'MBL.TIMELN.GRP.LN' 'MBL.TL.AGRI.REF.LN' 'MBL.TL.FSF.LN' 'MBL.TRM.NGO.LN' 'MBL.TRMLN.GRP.LN' AND CO.CODE EQ ":Y.COMPANY
+*--------HEAD OFFICE--javascript:doloadCompany('BD0010001');------------------------------------
+        IF Y.COMPANY EQ 'BD0010001' THEN
+*   SEL.CMD.ARR = "SELECT ":FN.AA.ARRANGEMENT:" WITH PRODUCT.LINE EQ 'LENDING' OR PRODUCT.LINE EQ 'ACCOUNTS' AND PRODUCT.GROUP NE 'MBL.CD.GRP.AC' AND PRODUCT.GROUP NE 'MBL.FCAC.GRP.AC' AND PRODUCT.GROUP NE 'MBL.FCACTAKA.GRP.AC' AND PRODUCT.GROUP NE 'MBL.SD.GRP.AC' AND PRODUCT.GROUP NE 'MBL.SND.GRP.AC' AND PRODUCT.GROUP NE 'MBL.TFFCY.GRP.AC' AND PRODUCT.GROUP NE 'MBL.TFLCY.GRP.AC'"
+            SEL.CMD.ARR = "SELECT ":FN.AA.ARRANGEMENT:" WITH PRODUCT.LINE EQ 'LENDING' 'ACCOUNTS' AND PRODUCT.GROUP EQ 'MBL.BLOCK.INTER.LN' 'MBL.CAR.PRN.LN' 'MBL.CSHCR.AG.LN' 'MBL.CSHCR.HP.LN' 'MBL.EDF.INFIN.LN' 'MBL.EDF.LN' 'MBL.EHBL.PRN.LN' 'MBL.LIQ.AC.LN' 'MBL.PAD.BTB.LN' 'MBL.PAD.CASH.LN' 'MBL.PRV.FND.LN' 'MBL.SOD.AGR.LN' 'MBL.SOD.EMFS.LN' 'MBL.SOD.FDR.LN' 'MBL.SOD.GEN.LN' 'MBL.SOD.SCHM.LN' 'MBL.ST.PRS.P.LN' 'IS.MBL.AGR.HPSM.LN' 'IS.MBL.AGR.MUAJ.LN' 'IS.MBL.COR.ASRF.LN' 'IS.MBL.COR.HPSM.LN' 'IS.MBL.COR.MUAJ.LN' 'IS.MBL.COR.MUR.LN' 'IS.MBL.COR.MUSH.LN' 'IS.MBL.COR.QRD.LN' 'IS.MBL.COR.SALM.LN' 'IS.MBL.MIC.HPSM.LN' 'IS.MBL.MIC.MUAJ.LN' 'IS.MBL.MIC.MUR.LN' 'IS.MBL.MIC.MUSH.LN' 'IS.MBL.MIC.QRD.LN' 'IS.MBL.RET.HPSM.LN' 'IS.MBL.RET.MUAJ.LN' 'IS.MBL.RET.QRD.LN' 'IS.MBL.SME.ASRF.LN' 'IS.MBL.SME.HPSM.LN' 'IS.MBL.SME.MUAJ.LN' 'IS.MBL.SME.MUR.LN' 'IS.MBL.SME.MUSH.LN' 'IS.MBL.SME.QRD.LN' 'IS.MBL.SME.SALM.LN' 'MBL.ANY.PURP.LN' 'MBL.AUTO.RET.LN' 'MBL.BB.RF.FC.LN' 'MBL.BBREFIN.GRP.LN' 'MBL.BIL.DISC.LN' 'MBL.BILLDISC.GRP.LN' 'MBL.COTT.RET.LN' 'MBL.DOCT.RET.LN' 'MBL.EDU.RET.LN' 'MBL.FBP.LN' 'MBL.FDBP.GRP.LN' 'MBL.FDBP.LN' 'MBL.FO.LN' 'MBL.FORCE.BG.LN' 'MBL.FORCE.IMP.LN' 'MBL.GEN.CORP.LN' 'MBL.HBL.LN' 'MBL.HIRE.PUR.LN' 'MBL.HOUSE.FU.LN' 'MBL.HREPRCH.GRP.LN' 'MBL.HSBLDNG.GRP.LN' 'MBL.IBP.CLN' 'MBL.IBPCLN.GRP.LN' 'MBL.IDBP.GRP.LN' 'MBL.IDBP.LN' 'MBL.LEAS.AGR.LN' 'MBL.LEAS.FIN.LN' 'MBL.LEASEFIN.GRP.LN' 'MBL.LOANFO.GRP.LN' 'MBL.LTR.GRP.LN' 'MBL.LTR.LN' 'MBL.OTH.CONS.LN' 'MBL.OTHER.LN' 'MBL.OTHLN.GRP.LN' 'MBL.OTHRETL.GRP.LN' 'MBL.OVRS.EMP.LN' 'MBL.PACK.CR.LN' 'MBL.PC.GRP.LN' 'MBL.PER.RET.LN' 'MBL.PRANTIK.LN' 'MBL.SHRT.AGR.LN' 'MBL.SHRT.TRM.LN' 'MBL.SHRTLN.GRP.LN' 'MBL.SML.SCH.LN' 'MBL.SOD.WO.LN' 'MBL.SODWO.GRP.LN' 'MBL.TERM.AGR.LN' 'MBL.TERM.FIS.LN' 'MBL.TERM.LN' 'MBL.TIME.FIS.LN' 'MBL.TIME.FRC.LN' 'MBL.TIME.LN' 'MBL.TIMELN.GRP.LN' 'MBL.TL.AGRI.REF.LN' 'MBL.TL.FSF.LN' 'MBL.TRM.NGO.LN' 'MBL.TRMLN.GRP.LN'"
+        END
+    END
+
+    IF Y.MNEMONIC EQ 'ISL' THEN
+        Y.OD.PROPER = "PFTONOD"
+        Y.INT.PROPER = "DEFERREDPFT"
+        Y.CR.ACC = 'CURISACCOUNT'
+        Y.PR.INT = 'ACCDEFERREDPFT'
+        Y.DUE.PR.INT = 'DUEDEFERREDPFT'
+        Y.MRK.PR.INT = 'RECMARKUPPFT'
+        Y.DUE.ACC = "DUEISACCOUNT"
+*MUST INCLUDE IN PRINCIPAL AMT--- DUEISACCOUNT****
+        Y.PD.BAL.TYPE.ALL = 'DELISACCOUNT':@VM:'DOFISACCOUNT':@VM:'GRCISACCOUNT':@VM:'NABISACCOUNT':@VM:'SMAISACCOUNT':@VM:'STDISACCOUNT':@VM:'SUBISACCOUNT'
+        Y.PD.PFT.ALL = 'ACCPFTONOD'@VM:'DELDEFERREDPFT':@VM:'DOFDEFERREDPFT':@VM:'GRCDEFERREDPFT':@VM:'NABDEFERREDPFT':@VM:'SMADEFERREDPFT':@VM:'STDDEFERREDPFT':@VM:'SUBDEFERREDPFT'
+        Y.PENAL.PFT.ALL = 'ACCPENALTYPFT':@VM:'BALPENALTYPFT':@VM:'DEFPENALTYPFT':@VM:'DELPENALTYPFT':@VM:'DOFPENALTYPFT':@VM:'DUEPENALTYPFT':@VM:'GRCPENALTYPFT':@VM:'NABPENALTYPFT':@VM:'RECPENALTYPFT':@VM:'RESPENALTYPFT':@VM:'SMAPENALTYPFT':@VM:'STDPENALTYPFT'
+    
+*----------------------------Main Process--------------------------------------------------
+* SEL.CMD.ARR = "SELECT ":FN.AA.ARRANGEMENT:" WITH PRODUCT.LINE EQ 'LENDING' OR PRODUCT.LINE EQ 'ACCOUNTS' AND PRODUCT.GROUP NE 'MBL.CD.GRP.AC' AND PRODUCT.GROUP NE 'MBL.FCAC.GRP.AC' AND PRODUCT.GROUP NE 'MBL.FCACTAKA.GRP.AC' AND PRODUCT.GROUP NE 'MBL.SD.GRP.AC' AND PRODUCT.GROUP NE 'MBL.SND.GRP.AC' AND PRODUCT.GROUP NE 'MBL.TFFCY.GRP.AC' AND PRODUCT.GROUP NE 'MBL.TFLCY.GRP.AC' AND CO.CODE EQ ":Y.COMPANY
+        SEL.CMD.ARR = "SELECT ":FN.AA.ARRANGEMENT:" WITH PRODUCT.LINE EQ 'LENDING' 'ACCOUNTS' AND PRODUCT.GROUP EQ 'MBL.BLOCK.INTER.LN' 'MBL.CAR.PRN.LN' 'MBL.CSHCR.AG.LN' 'MBL.CSHCR.HP.LN' 'MBL.EDF.INFIN.LN' 'MBL.EDF.LN' 'MBL.EHBL.PRN.LN' 'MBL.LIQ.AC.LN' 'MBL.PAD.BTB.LN' 'MBL.PAD.CASH.LN' 'MBL.PRV.FND.LN' 'MBL.SOD.AGR.LN' 'MBL.SOD.EMFS.LN' 'MBL.SOD.FDR.LN' 'MBL.SOD.GEN.LN' 'MBL.SOD.SCHM.LN' 'MBL.ST.PRS.P.LN' 'IS.MBL.AGR.HPSM.LN' 'IS.MBL.AGR.MUAJ.LN' 'IS.MBL.COR.ASRF.LN' 'IS.MBL.COR.HPSM.LN' 'IS.MBL.COR.MUAJ.LN' 'IS.MBL.COR.MUR.LN' 'IS.MBL.COR.MUSH.LN' 'IS.MBL.COR.QRD.LN' 'IS.MBL.COR.SALM.LN' 'IS.MBL.MIC.HPSM.LN' 'IS.MBL.MIC.MUAJ.LN' 'IS.MBL.MIC.MUR.LN' 'IS.MBL.MIC.MUSH.LN' 'IS.MBL.MIC.QRD.LN' 'IS.MBL.RET.HPSM.LN' 'IS.MBL.RET.MUAJ.LN' 'IS.MBL.RET.QRD.LN' 'IS.MBL.SME.ASRF.LN' 'IS.MBL.SME.HPSM.LN' 'IS.MBL.SME.MUAJ.LN' 'IS.MBL.SME.MUR.LN' 'IS.MBL.SME.MUSH.LN' 'IS.MBL.SME.QRD.LN' 'IS.MBL.SME.SALM.LN' 'MBL.ANY.PURP.LN' 'MBL.AUTO.RET.LN' 'MBL.BB.RF.FC.LN' 'MBL.BBREFIN.GRP.LN' 'MBL.BIL.DISC.LN' 'MBL.BILLDISC.GRP.LN' 'MBL.COTT.RET.LN' 'MBL.DOCT.RET.LN' 'MBL.EDU.RET.LN' 'MBL.FBP.LN' 'MBL.FDBP.GRP.LN' 'MBL.FDBP.LN' 'MBL.FO.LN' 'MBL.FORCE.BG.LN' 'MBL.FORCE.IMP.LN' 'MBL.GEN.CORP.LN' 'MBL.HBL.LN' 'MBL.HIRE.PUR.LN' 'MBL.HOUSE.FU.LN' 'MBL.HREPRCH.GRP.LN' 'MBL.HSBLDNG.GRP.LN' 'MBL.IBP.CLN' 'MBL.IBPCLN.GRP.LN' 'MBL.IDBP.GRP.LN' 'MBL.IDBP.LN' 'MBL.LEAS.AGR.LN' 'MBL.LEAS.FIN.LN' 'MBL.LEASEFIN.GRP.LN' 'MBL.LOANFO.GRP.LN' 'MBL.LTR.GRP.LN' 'MBL.LTR.LN' 'MBL.OTH.CONS.LN' 'MBL.OTHER.LN' 'MBL.OTHLN.GRP.LN' 'MBL.OTHRETL.GRP.LN' 'MBL.OVRS.EMP.LN' 'MBL.PACK.CR.LN' 'MBL.PC.GRP.LN' 'MBL.PER.RET.LN' 'MBL.PRANTIK.LN' 'MBL.SHRT.AGR.LN' 'MBL.SHRT.TRM.LN' 'MBL.SHRTLN.GRP.LN' 'MBL.SML.SCH.LN' 'MBL.SOD.WO.LN' 'MBL.SODWO.GRP.LN' 'MBL.TERM.AGR.LN' 'MBL.TERM.FIS.LN' 'MBL.TERM.LN' 'MBL.TIME.FIS.LN' 'MBL.TIME.FRC.LN' 'MBL.TIME.LN' 'MBL.TIMELN.GRP.LN' 'MBL.TL.AGRI.REF.LN' 'MBL.TL.FSF.LN' 'MBL.TRM.NGO.LN' 'MBL.TRMLN.GRP.LN' AND CO.CODE EQ ":Y.COMPANY
+*--------HEAD OFFICE--javascript:doloadCompany('BD0010001');------------------------------------
+        IF Y.COMPANY EQ 'BD0010001' THEN
+*   SEL.CMD.ARR = "SELECT ":FN.AA.ARRANGEMENT:" WITH PRODUCT.LINE EQ 'LENDING' OR PRODUCT.LINE EQ 'ACCOUNTS' AND PRODUCT.GROUP NE 'MBL.CD.GRP.AC' AND PRODUCT.GROUP NE 'MBL.FCAC.GRP.AC' AND PRODUCT.GROUP NE 'MBL.FCACTAKA.GRP.AC' AND PRODUCT.GROUP NE 'MBL.SD.GRP.AC' AND PRODUCT.GROUP NE 'MBL.SND.GRP.AC' AND PRODUCT.GROUP NE 'MBL.TFFCY.GRP.AC' AND PRODUCT.GROUP NE 'MBL.TFLCY.GRP.AC'"
+            SEL.CMD.ARR = "SELECT ":FN.AA.ARRANGEMENT:" WITH PRODUCT.LINE EQ 'LENDING' 'ACCOUNTS' AND PRODUCT.GROUP EQ 'MBL.BLOCK.INTER.LN' 'MBL.CAR.PRN.LN' 'MBL.CSHCR.AG.LN' 'MBL.CSHCR.HP.LN' 'MBL.EDF.INFIN.LN' 'MBL.EDF.LN' 'MBL.EHBL.PRN.LN' 'MBL.LIQ.AC.LN' 'MBL.PAD.BTB.LN' 'MBL.PAD.CASH.LN' 'MBL.PRV.FND.LN' 'MBL.SOD.AGR.LN' 'MBL.SOD.EMFS.LN' 'MBL.SOD.FDR.LN' 'MBL.SOD.GEN.LN' 'MBL.SOD.SCHM.LN' 'MBL.ST.PRS.P.LN' 'IS.MBL.AGR.HPSM.LN' 'IS.MBL.AGR.MUAJ.LN' 'IS.MBL.COR.ASRF.LN' 'IS.MBL.COR.HPSM.LN' 'IS.MBL.COR.MUAJ.LN' 'IS.MBL.COR.MUR.LN' 'IS.MBL.COR.MUSH.LN' 'IS.MBL.COR.QRD.LN' 'IS.MBL.COR.SALM.LN' 'IS.MBL.MIC.HPSM.LN' 'IS.MBL.MIC.MUAJ.LN' 'IS.MBL.MIC.MUR.LN' 'IS.MBL.MIC.MUSH.LN' 'IS.MBL.MIC.QRD.LN' 'IS.MBL.RET.HPSM.LN' 'IS.MBL.RET.MUAJ.LN' 'IS.MBL.RET.QRD.LN' 'IS.MBL.SME.ASRF.LN' 'IS.MBL.SME.HPSM.LN' 'IS.MBL.SME.MUAJ.LN' 'IS.MBL.SME.MUR.LN' 'IS.MBL.SME.MUSH.LN' 'IS.MBL.SME.QRD.LN' 'IS.MBL.SME.SALM.LN' 'MBL.ANY.PURP.LN' 'MBL.AUTO.RET.LN' 'MBL.BB.RF.FC.LN' 'MBL.BBREFIN.GRP.LN' 'MBL.BIL.DISC.LN' 'MBL.BILLDISC.GRP.LN' 'MBL.COTT.RET.LN' 'MBL.DOCT.RET.LN' 'MBL.EDU.RET.LN' 'MBL.FBP.LN' 'MBL.FDBP.GRP.LN' 'MBL.FDBP.LN' 'MBL.FO.LN' 'MBL.FORCE.BG.LN' 'MBL.FORCE.IMP.LN' 'MBL.GEN.CORP.LN' 'MBL.HBL.LN' 'MBL.HIRE.PUR.LN' 'MBL.HOUSE.FU.LN' 'MBL.HREPRCH.GRP.LN' 'MBL.HSBLDNG.GRP.LN' 'MBL.IBP.CLN' 'MBL.IBPCLN.GRP.LN' 'MBL.IDBP.GRP.LN' 'MBL.IDBP.LN' 'MBL.LEAS.AGR.LN' 'MBL.LEAS.FIN.LN' 'MBL.LEASEFIN.GRP.LN' 'MBL.LOANFO.GRP.LN' 'MBL.LTR.GRP.LN' 'MBL.LTR.LN' 'MBL.OTH.CONS.LN' 'MBL.OTHER.LN' 'MBL.OTHLN.GRP.LN' 'MBL.OTHRETL.GRP.LN' 'MBL.OVRS.EMP.LN' 'MBL.PACK.CR.LN' 'MBL.PC.GRP.LN' 'MBL.PER.RET.LN' 'MBL.PRANTIK.LN' 'MBL.SHRT.AGR.LN' 'MBL.SHRT.TRM.LN' 'MBL.SHRTLN.GRP.LN' 'MBL.SML.SCH.LN' 'MBL.SOD.WO.LN' 'MBL.SODWO.GRP.LN' 'MBL.TERM.AGR.LN' 'MBL.TERM.FIS.LN' 'MBL.TERM.LN' 'MBL.TIME.FIS.LN' 'MBL.TIME.FRC.LN' 'MBL.TIME.LN' 'MBL.TIMELN.GRP.LN' 'MBL.TL.AGRI.REF.LN' 'MBL.TL.FSF.LN' 'MBL.TRM.NGO.LN' 'MBL.TRMLN.GRP.LN'"
+        END
+    END
+ 
+    EB.DataAccess.Readlist(SEL.CMD.ARR, SEL.LIST, '', NO.OF.REC, SystemReturnCode)
+    LOOP
+        REMOVE Y.ARR.ID FROM SEL.LIST SETTING POS
+    WHILE Y.ARR.ID:POS
+*
+*Loan ID
+*  Y.ARR.ID = "AA21006XB41F"
+*  DEBUG
+* Y.ARR.ID = "AA21091LMZHW"
+        
+        EB.DataAccess.FRead(FN.AA.ARRANGEMENT, Y.ARR.ID, REC.AA, F.AA.ARRANGEMENT, ERR.ARR)
+        Y.LN.LC.NUM = Y.ARR.ID
+        Y.CUS.ID = REC.AA<AA.Framework.Arrangement.ArrCustomer>
+        Y.ACC.NUM = REC.AA<AA.Framework.Arrangement.ArrLinkedApplId>
+        Y.PROD.LINE = REC.AA<AA.Framework.Arrangement.ArrProductLine>
+        Y.CURRENCY = REC.AA<AA.Framework.Arrangement.ArrCurrency>
+        Y.ARR.STATUS = REC.AA<AA.Framework.Arrangement.ArrArrStatus>
+        Y.ARR.COM.CODE = REC.AA<AA.Framework.Arrangement.ArrCoCode>
+        Y.DISB.DATE = REC.AA<AA.Framework.Arrangement.ArrStartDate>
+*----------------------------------END----------------------------------------------------
+
+        EB.DataAccess.FRead(FN.ACCT.DETAILS, Y.ARR.ID, REC.ACCT.DET, F.ACCT.DETAILS, Er)
+        Y.ACC.VALUE.DATE = REC.ACCT.DET<AA.PaymentSchedule.AccountDetails.AdBaseDate>
+        Y.EXPIRY.DATE = REC.ACCT.DET<AA.PaymentSchedule.AccountDetails.AdMaturityDate>
+        Y.EXP.DATE = REC.ACCT.DET<AA.PaymentSchedule.AccountDetails.AdMaturityDate>
+        
+*-----------------------COMPANY/BRANCH NAME-------------------------------------------
+        EB.DataAccess.FRead(FN.COM, Y.ARR.COM.CODE, R.COM, F.COM, C.ERR)
+        Y.COM.NAME = R.COM<ST.CompanyCreation.Company.EbComCompanyName>
+    
+*-----------------------------------------------------------------------------
+*Customer Name
+    
+        EB.DataAccess.FRead(FN.CUS, Y.CUS.ID, R.CUS, F.CUS, CUS.ERR)
+        Y.CUS.TITLE= R.CUS<ST.Customer.Customer.EbCusShortName>
+
+*-*Limit Ref. UPDATE***--------------------------NEW ADDITION 4TH MAY 2021-----------------------------------
+        Y.PROP.CLASS = 'LIMIT'
+        AA.Framework.GetArrangementConditions(Y.ARR.ID,Y.PROP.CLASS,PROPERTY,'',RETURN.IDS,RETURN.VALUES,ERR.MSG)
+        R.REC = RAISE(RETURN.VALUES)
+        Y.LIMIT.REF = R.REC<AA.Limit.Limit.LimLimitReference>
+        
+*-----------IF LIMIT IS NULL -------------LT.AC.BD.LMTPRD-----------------------
+
+*---------------------------AA.ARR.ACCOUNT------------------------------------------
+        PROP.CLASS.ACC = 'ACCOUNT'
+        AA.Framework.GetArrangementConditions(Y.ARR.ID, PROP.CLASS.ACC, PROPERTY, '', RETURN.IDS.ACC, RETURN.VALUES.ACC, ERR.MSG.ACC)
+        R.ACC.DET= RAISE(RETURN.VALUES.ACC)
+*Get Data ----READ LOAN ID --FROM ARR COND-------Y.LN.ACC------
+        Y.LT.AC.BD.LMTPRD = R.ACC.DET<AA.Account.Account.AcLocalRef,Y.LT.AC.BD.LMTPRD.POS>
+      
+**----CURR.CL > AA.ARR.ACCOUNT >> LT.ASSET.CLASS--------*
+        CURR.CL = R.ACC.DET<AA.Account.Account.AcLocalRef,Y.LT.ASSET.CLASS.POS>
+        MANUAL.CL = R.ACC.DET<AA.Account.Account.AcLocalRef,Y.LT.MAIN.MANUAL.POS>
+     
+*--------------------------------------------------------------------------
+
+*------------------------------------
+      
+
+        IF Y.LIMIT.REF EQ '' THEN
+            Y.LIMIT.REF = Y.LT.AC.BD.LMTPRD
+        END
+        
+*------------LOAN NATURE >LIMIT.REFERENCE > Y.LIMIT.REF >>LT.LN.TYPE>> BD.NPA.LN.TYPE  >> DESCRIPTION------------------*
+        EB.DataAccess.FRead(FN.LIMIT.REFERENCE, Y.LIMIT.REF, REC.LRF, F.LIMIT.REFERENCE, ERR.LRF)
+        Y.LT.LN.TP = REC.LRF<LI.Config.LimitReference.RefLocalRef,Y.LT.LN.TYPE.POS>
+        Y.BD.NPA.GROUP = Y.LT.LN.TP
+*        IF Y.BD.NPA.GROUP EQ '' THEN
+*            RETURN
+*        END
+    
+*----------------------------------------------------------------------------
+        
+*Loan Type
+        EB.DataAccess.FRead(FN.AA.ARRANGEMENT, Y.LN.LC.NUM, R.ARR, F.AA.ARRANGEMENT, LN.ERR.ARR)
+        Y.LN.TYP = R.ARR<AA.Framework.Arrangement.ArrProduct>
+    
+        EB.DataAccess.FRead(FN.AA.PRODUCT, Y.LN.TYP, PRD.REC, F.AA.PRODUCT, PRD.ERR)
+        Y.PRD.DES = PRD.REC<AA.ProductManagement.Product.PdtDescription>
+*----------------------------------------------------------------------------------------
+
+        EB.DataAccess.FRead(FN.BD.NPA.LN.TYPE,Y.LT.LN.TP, REC.TP, F.BD.NPA.LN.TYPE, ERR.TP)
+        LOAN.NATURE = REC.TP<BD.NPA.LN.DESCRIPTION>
+        
+*---------LT.AC.BD.LNMADT--------------------------------------*
+        IF Y.EXPIRY.DATE EQ '' THEN
+            Y.EXPIRY.DATE = R.ACC.DET<AA.Account.Account.AcLocalRef,Y.AC.BD.LNMADT.POS>
+        END
+        
+        IF Y.EXP.DATE EQ '' THEN
+            Y.EXP.DATE = R.ACC.DET<AA.Account.Account.AcLocalRef,Y.AC.BD.LNMADT.POS>
+        END
+    
+        IF Y.EXPIRY.DATE EQ '' THEN
+            Y.EXPIRY.DATE = Y.TODAY
+        END
+        
+        IF Y.EXP.DATE EQ '' THEN
+            Y.EXP.DATE = Y.TODAY
+        END
+    
+        IF Y.EXPIRY.DATE GT Y.TODAY THEN
+            Y.EXPIRY.DATE = Y.TODAY
+        END
+    
+*-UPDATE OVERDUE.FROM FOR TERM LOANS--set status 'UNPAID',ageing status NE 'SETTLED' and Bill type 'INSTALLMENT' er oldest date---------------*
+        OVERDUE.FROM = Y.EXPIRY.DATE
+
+*-------------------OVERDUE DAYS-------------------------------
+        V.DIFF = 'C' ;* or C for calendar days
+        EB.API.Cdd('', Y.TODAY, OVERDUE.FROM, V.DIFF)
+        OVERDUE.DAYS = ABS(V.DIFF)
+*-------------------------------------------------------------
+
+        IF LOAN.NATURE EQ "Term" THEN
+            EB.DataAccess.FRead(FN.ACCT.DETAILS, Y.ARR.ID, REC.ACCT.DET, F.ACCT.DETAILS, Er)
+            Y.TOT.BILL.TYPE = REC.ACCT.DET<AA.PaymentSchedule.AccountDetails.AdBillType>
+            Y.TOT.SET.STATUS = REC.ACCT.DET<AA.PaymentSchedule.AccountDetails.AdSetStatus>
+            Y.TOT.AGE.STATUS = REC.ACCT.DET<AA.PaymentSchedule.AccountDetails.AdArrAgeStatus>
+            Y.TOT.BILL.DATE = REC.ACCT.DET<AA.PaymentSchedule.AccountDetails.AdBillDate>
+        
+*-----------------------INSTALLMENT AMOUNT READ-----------------------------------
+            CONVERT @SM TO @VM IN Y.TOT.BILL.TYPE
+            CONVERT @SM TO @VM IN Y.TOT.SET.STATUS
+            CONVERT @SM TO @VM IN Y.TOT.AGE.STATUS
+            CONVERT @SM TO @VM IN Y.TOT.BILL.DATE
+            Y.DCOUNT = DCOUNT(Y.TOT.BILL.TYPE,@VM)
+*
+            FOR J=1 TO Y.DCOUNT
+                Y.BILL.TYPE = Y.TOT.BILL.TYPE<1,J>
+                Y.SET.STATUS = Y.TOT.SET.STATUS<1,J>
+                Y.AGE.STATUS = Y.TOT.AGE.STATUS<1,J>
+*------- AND Y.AGE.STATUS EQ 'SETTLED' REMOVED ------------
+                IF Y.BILL.TYPE EQ 'INSTALLMENT' AND Y.SET.STATUS EQ 'UNPAID' THEN
+                    OVERDUE.FROM = Y.TOT.BILL.DATE<1,J>
+                    BREAK
+                END
+            NEXT J
+*-------------------OVERDUE DAYS-------------------------------
+            V.DIFF = 'C' ;* or C for calendar days
+            EB.API.Cdd('', Y.TODAY, OVERDUE.FROM, V.DIFF)
+            OVERDUE.DAYS = ABS(V.DIFF)
+*-------------------------------------------------------------
+        END
+        
+*--------------------------------------------------------------------------------------------
+        EB.DataAccess.FRead(FN.BD.NPA.PARAM, Y.BD.NPA.GROUP, R.NPA.PARAM, F.BD.NPA.PARAM, ERR.NAPA.PARAM)
+        Y.CALC.TYPE = R.NPA.PARAM<BD.NPA.CALC.TYPE>
+        Y.TOTAL.SLAB = DCOUNT(R.NPA.PARAM<BD.NPA.ASSET.CLASS>,@VM)
+        FOR J = 1 TO Y.TOTAL.SLAB
+            Y.OVERDUE.INSTL.FR = FIELD(R.NPA.PARAM<BD.NPA.OVERDUE.DAY.FR>,@VM,J)
+            Y.OVERDUE.INSTL.TO = FIELD(R.NPA.PARAM<BD.NPA.OVERDUE.DAY.TO>,@VM,J)
+            IF (OVERDUE.DAYS GE Y.OVERDUE.INSTL.FR AND OVERDUE.DAYS LE Y.OVERDUE.INSTL.TO) THEN
+                PROBABLE.CL = FIELD(R.NPA.PARAM<BD.NPA.ASSET.CLASS>,@VM,J)
+                BREAK
+            END
+        NEXT J
+* ----PD.STATUS----BD.NPA.PARAM >> ASSET.CLASS >> LN.ASSET.CLASS >> DESCRIPTION---------------*
+        EB.DataAccess.FRead(FN.LN.ASSET.CLASS, PROBABLE.CL, REC.AST, F.LN.ASSET.CLASS, ERR.AST)
+        PD.STATUS = REC.AST<ST.AssetProcessing.LnAssetClass.LnAssclsDescription>
+
+*---------------------------------------------------------------------------------------
+
+*******************************PRINT AREA**************************************************
+*
+        Y.DATA<-1>= Y.COMPANY:'*':Y.COM.NAME:'*':Y.ARR.ID:'*':Y.CUS.TITLE:'*':Y.LIMIT.REF:'*':Y.PRD.DES:'*':Y.EXP.DATE:'*':OVERDUE.FROM:'*':CURR.CL:'*':PROBABLE.CL:'*':MANUAL.CL:'*':PD.STATUS:'*':LOAN.NATURE:'*':OVERDUE.DAYS:'*':Y.TODAY
+*                       1            2               3             4              5              6               7               8                9            10              11            12              13            14              15
+    REPEAT
+
+    Y.MNEMONIC = ''
+    FLD.POS = ''
+    Y.ARR.ID = ''
+    Y.ARR.COM.CODE = ''
+    Y.CUS.ID = ''
+    Y.PRD.DES = ''
+    Y.LIMIT.REF = ''
+    Y.LT.AC.BD.LMTPRD = ''
+    CURR.CL = ''
+    PROBABLE.CL = ''
+    MANUAL.CL = ''
+    PD.STATUS = ''
+    LOAN.NATURE = ''
+    OVERDUE.FROM = ''
+    Y.LN.LC.NUM = ''
+    OVERDUE.DAYS = ''
+    Y.EXPIRY.DATE = ''
+    Y.EXP.DATE = ''
+    Y.LT.LN.TP = ''
+    Y.LN.TYP = ''
+    Y.LN.ACC = ''
+    Y.BD.NPA.GROUP = ''
+    Y.TOTAL.SLAB = ''
+    Y.OVERDUE.INSTL.TO = ''
+    Y.OVERDUE.INSTL.FR = ''
+ 
+RETURN
+END

@@ -1,0 +1,22 @@
+* I_F.MBL.TXN.PROFILE.PARAM Created 29 JUN 20 at 02:24PM by mbll3dev/AZAM001
+*      PREFIX[MBL.TXN]
+           EQU MBL.TXN.DEPOSIT.PARTICULAR TO 1,   MblTxnProfileParam_DepositParticular TO 1,
+                     MBL.TXN.DEP.TXN.CODE TO 2,   MblTxnProfileParam_DepTxnCode TO 2,
+              MBL.TXN.WITHDRAW.PARTICULAR TO 3,   MblTxnProfileParam_WithdrawParticular TO 3,
+                    MBL.TXN.WITH.TXN.CODE TO 4,   MblTxnProfileParam_WithTxnCode TO 4,
+                        MBL.TXN.LOCAL.REF TO 5,   MblTxnProfileParam_LocalRef TO 5,
+                       MBL.TXN.RESERVED.5 TO 6,   MblTxnProfileParam_Reserved5 TO 6,
+                       MBL.TXN.RESERVED.4 TO 7,   MblTxnProfileParam_Reserved4 TO 7,
+                       MBL.TXN.RESERVED.3 TO 8,   MblTxnProfileParam_Reserved3 TO 8,
+                       MBL.TXN.RESERVED.2 TO 9,   MblTxnProfileParam_Reserved2 TO 9,
+                       MBL.TXN.RESERVED.1 TO 10,  MblTxnProfileParam_Reserved1 TO 10,
+                         MBL.TXN.OVERRIDE TO 11,  MblTxnProfileParam_Override TO 11,
+                    MBL.TXN.RECORD.STATUS TO 12,  MblTxnProfileParam_RecordStatus TO 12,
+                          MBL.TXN.CURR.NO TO 13,  MblTxnProfileParam_CurrNo TO 13,
+                         MBL.TXN.INPUTTER TO 14,  MblTxnProfileParam_Inputter TO 14,
+                        MBL.TXN.DATE.TIME TO 15,  MblTxnProfileParam_DateTime TO 15,
+                       MBL.TXN.AUTHORISER TO 16,  MblTxnProfileParam_Authoriser TO 16,
+                          MBL.TXN.CO.CODE TO 17,  MblTxnProfileParam_CoCode TO 17,
+                        MBL.TXN.DEPT.CODE TO 18,  MblTxnProfileParam_DeptCode TO 18,
+                     MBL.TXN.AUDITOR.CODE TO 19,  MblTxnProfileParam_AuditorCode TO 19,
+                  MBL.TXN.AUDIT.DATE.TIME TO 20,  MblTxnProfileParam_AuditDateTime TO 20

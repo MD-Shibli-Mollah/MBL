@@ -1,0 +1,52 @@
+* @ValidationCode : MjoxOTkyNDY2NDY3OkNwMTI1MjoxNjAyNjc1OTkwMDg1OnVzZXI6LTE6LTE6MDowOmZhbHNlOk4vQTpERVZfMjAxNzEwLjA6LTE6LTE=
+* @ValidationInfo : Timestamp         : 14 Oct 2020 17:46:30
+* @ValidationInfo : Encoding          : Cp1252
+* @ValidationInfo : User Name         : user
+* @ValidationInfo : Nb tests success  : N/A
+* @ValidationInfo : Nb tests failure  : N/A
+* @ValidationInfo : Rating            : N/A
+* @ValidationInfo : Coverage          : N/A
+* @ValidationInfo : Strict flag       : N/A
+* @ValidationInfo : Bypass GateKeeper : false
+* @ValidationInfo : Compiler Version  : DEV_201710.0
+*-----------------------------------------------------------------------------
+* <Rating>-13</Rating>
+*-----------------------------------------------------------------------------
+SUBROUTINE BD.NPA.LN.TYPE
+*-----------------------------------------------------------------------------
+* Modification History :
+
+* TODO add a description of the application here.
+* * @AUTHOR         : MD SHIBLI MOLLAH -- FDS Bangladesh. smollah@fortress-global.com
+* @stereotype Application
+* @package TODO define the product group and product, e.g. infra.eb
+* </doc>
+* 2020/10/14
+*-----------------------------------------------------------------------------
+* TODO - You MUST write a .FIELDS routine for the field definitions
+*-----------------------------------------------------------------------------
+
+* <region name= Inserts>
+    $INSERT I_COMMON
+    $INSERT I_EQUATE
+    $INSERT I_Table
+* </region>
+*-----------------------------------------------------------------------------
+    Table.name = 'BD.NPA.LN.TYPE'        ;* Full application name including product prefix
+    Table.title = 'Non Performing Asset Loan Type'       ;* Screen title
+    Table.stereotype = 'H'    ;* H, U, L, W or T
+    Table.product = 'EB'      ;* Must be on EB.PRODUCT
+    Table.subProduct = ''     ;* Must be on EB.SUB.PRODUCT
+    Table.classification = 'INT'        ;* As per FILE.CONTROL
+    Table.systemClearFile = 'N'         ;* As per FILE.CONTROL
+    Table.relatedFiles = ''   ;* As per FILE.CONTROL
+    Table.isPostClosingFile = ''        ;* As per FILE.CONTROL
+    Table.equatePrefix = 'BD.NPA.LN'        ;* Use to create I_F.EB.LOG.PARAMETER
+*-----------------------------------------------------------------------------
+    Table.idPrefix = ''       ;* Used by EB.FORMAT.ID if set
+    Table.blockedFunctions = ''         ;* Space delimeted list of blocked functions
+    Table.trigger = ''        ;* Trigger field used for OPERATION style fields
+*-----------------------------------------------------------------------------
+
+RETURN
+END

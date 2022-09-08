@@ -1,0 +1,22 @@
+* I_F.MBL.DEBIT.CARD.REQ Created 27 SEP 21 at 07:56PM by mbluat/SHIBLI2
+*      PREFIX[DEBIT.CARD]
+                 EQU DEBIT.CARD.CARD.REQUEST TO 1,   MblDebitCardReq_CardRequest TO 1,
+                             DEBIT.CARD.DATE TO 2,   MblDebitCardReq_Date TO 2,
+                      DEBIT.CARD.MARKETED.BY TO 3,   MblDebitCardReq_MarketedBy TO 3,
+                    DEBIT.CARD.CARD.CUSTOMER TO 4,   MblDebitCardReq_CardCustomer TO 4,
+                      DEBIT.CARD.RESERVED.05 TO 5,   MblDebitCardReq_Reserved05 TO 5,
+                      DEBIT.CARD.RESERVED.04 TO 6,   MblDebitCardReq_Reserved04 TO 6,
+                      DEBIT.CARD.RESERVED.03 TO 7,   MblDebitCardReq_Reserved03 TO 7,
+                      DEBIT.CARD.RESERVED.02 TO 8,   MblDebitCardReq_Reserved02 TO 8,
+                      DEBIT.CARD.RESERVED.01 TO 9,   MblDebitCardReq_Reserved01 TO 9,
+                        DEBIT.CARD.LOCAL.REF TO 10,  MblDebitCardReq_LocalRef TO 10,
+                         DEBIT.CARD.OVERRIDE TO 11,  MblDebitCardReq_Override TO 11,
+                    DEBIT.CARD.RECORD.STATUS TO 12,  MblDebitCardReq_RecordStatus TO 12,
+                          DEBIT.CARD.CURR.NO TO 13,  MblDebitCardReq_CurrNo TO 13,
+                         DEBIT.CARD.INPUTTER TO 14,  MblDebitCardReq_Inputter TO 14,
+                        DEBIT.CARD.DATE.TIME TO 15,  MblDebitCardReq_DateTime TO 15,
+                       DEBIT.CARD.AUTHORISER TO 16,  MblDebitCardReq_Authoriser TO 16,
+                          DEBIT.CARD.CO.CODE TO 17,  MblDebitCardReq_CoCode TO 17,
+                        DEBIT.CARD.DEPT.CODE TO 18,  MblDebitCardReq_DeptCode TO 18,
+                     DEBIT.CARD.AUDITOR.CODE TO 19,  MblDebitCardReq_AuditorCode TO 19,
+                  DEBIT.CARD.AUDIT.DATE.TIME TO 20,  MblDebitCardReq_AuditDateTime TO 20

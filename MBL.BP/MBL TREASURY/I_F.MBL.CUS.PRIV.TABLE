@@ -1,0 +1,18 @@
+* I_F.MBL.CUS.PRIV.TABLE Created 17 AUG 21 at 11:11AM by mbluat/SHIBLI
+*      PREFIX[MBL.CUS.PRIV]
+            EQU MBL.CUS.PRIV.BC.SELLING.SPREAD TO 1,   MblCusPrivTable_BcSellingSpread TO 1,
+                  MBL.CUS.PRIV.TT.CLEAN.SPREAD TO 2,   MblCusPrivTable_TtCleanSpread TO 2,
+                      MBL.CUS.PRIV.RESERVED.05 TO 3,   MblCusPrivTable_Reserved05 TO 3,
+                      MBL.CUS.PRIV.RESERVED.04 TO 4,   MblCusPrivTable_Reserved04 TO 4,
+                      MBL.CUS.PRIV.RESERVED.03 TO 5,   MblCusPrivTable_Reserved03 TO 5,
+                      MBL.CUS.PRIV.RESERVED.02 TO 6,   MblCusPrivTable_Reserved02 TO 6,
+                      MBL.CUS.PRIV.RESERVED.01 TO 7,   MblCusPrivTable_Reserved01 TO 7,
+                    MBL.CUS.PRIV.RECORD.STATUS TO 8,   MblCusPrivTable_RecordStatus TO 8,
+                          MBL.CUS.PRIV.CURR.NO TO 9,   MblCusPrivTable_CurrNo TO 9,
+                         MBL.CUS.PRIV.INPUTTER TO 10,  MblCusPrivTable_Inputter TO 10,
+                        MBL.CUS.PRIV.DATE.TIME TO 11,  MblCusPrivTable_DateTime TO 11,
+                       MBL.CUS.PRIV.AUTHORISER TO 12,  MblCusPrivTable_Authoriser TO 12,
+                          MBL.CUS.PRIV.CO.CODE TO 13,  MblCusPrivTable_CoCode TO 13,
+                        MBL.CUS.PRIV.DEPT.CODE TO 14,  MblCusPrivTable_DeptCode TO 14,
+                     MBL.CUS.PRIV.AUDITOR.CODE TO 15,  MblCusPrivTable_AuditorCode TO 15,
+                  MBL.CUS.PRIV.AUDIT.DATE.TIME TO 16,  MblCusPrivTable_AuditDateTime TO 16

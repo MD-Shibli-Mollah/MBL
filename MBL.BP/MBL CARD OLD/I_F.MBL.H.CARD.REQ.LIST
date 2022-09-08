@@ -1,0 +1,10 @@
+* I_F.MBL.H.CARD.REQ.LIST Created 26 SEP 21 at 10:50AM by mbluat/EBRAHIM.FDS02
+*      PREFIX[CARD.LIST]
+               EQU CARD.LIST.ACCOUNT.NUMBER TO 1,   MblHCardReqList_AccountNumber TO 1,
+                      CARD.LIST.RESERVED.05 TO 2,   MblHCardReqList_Reserved05 TO 2,
+                      CARD.LIST.RESERVED.04 TO 3,   MblHCardReqList_Reserved04 TO 3,
+                      CARD.LIST.RESERVED.03 TO 4,   MblHCardReqList_Reserved03 TO 4,
+                      CARD.LIST.RESERVED.02 TO 5,   MblHCardReqList_Reserved02 TO 5,
+                      CARD.LIST.RESERVED.01 TO 6,   MblHCardReqList_Reserved01 TO 6,
+                        CARD.LIST.LOCAL.REF TO 7,   MblHCardReqList_LocalRef TO 7,
+                         CARD.LIST.OVERRIDE TO 8,   MblHCardReqList_Override TO 8
